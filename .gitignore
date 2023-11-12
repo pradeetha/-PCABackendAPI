@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/PCABackendDA/bin
+/PCABackendService/obj/Debug
+/.vs/PCABackendAPI/FileContentIndex
+/PCABackendBL/bin
+/PCABackendBL/obj
+/PCABackendDA/obj
