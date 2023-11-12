@@ -1,0 +1,38 @@
+﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using PCABackendBL.BLServices;
+using PCABackendBL.BLServices.Interfaces;
+using PCABackendDA;
+using PCABackendDA.DataRepository;
+using PCABackendDA.DataRepository.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+
+[assembly: FunctionsStartup(typeof(PCABackendAPI.Startup))]
+namespace PCABackendAPI
+{
+    public class Startup : FunctionsStartup
+    {
+        public override void Configure(IFunctionsHostBuilder builder)
+        {
+            //builder.Services.AddHttpClient();
+
+            builder.Services.AddScoped<IDataConnection>((s) => {
+                return new DataConnection();
+            });
+            builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+            builder.Services.AddScoped<IPowerConsumptionRepository, PowerConsumptionRepository>();
+            builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+
+            builder.Services.AddScoped<IDeviceService, DeviceService>();
+            builder.Services.AddScoped<IPowerConsumptionService, PowerConsumptionService>();
+            builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+
+        }
+    }
+}
