@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -12,7 +13,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using PCABackendBL.APIEntity;
-using PCABackendBL.BLServices;
 using PCABackendBL.BLServices.Interfaces;
 using PCABackendDA.DataModels;
 
@@ -38,7 +38,7 @@ namespace PCABackendAPI
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ConsumptionServiceModel), Description = "Parameters", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "put", Route = null)] HttpRequest req)
+        public async Task<IActionResult> InsertConsumption([HttpTrigger(AuthorizationLevel.Function, "put", Route = "v1/PowerConsumption/")] HttpRequest req)
         {
             try
             {
@@ -77,22 +77,21 @@ namespace PCABackendAPI
         [FunctionName("GetConsumptionBySerialKey")]
         [OpenApiOperation(operationId: "GetConsumptionBySerialKey", tags: new[] { "PowerConsumptionManagement" })]
         [OpenApiSecurity("basic_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Basic)]
-        [OpenApiParameter(name: "DeviceSerialKey", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **DeviceSerialKey** parameter")]
+        [OpenApiParameter(name: "DeviceSerialKey", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The **DeviceSerialKey** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> GetConsumptionBySerialKey([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
+        public async Task<IActionResult> GetConsumptionBySerialKey([HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/PowerConsumption/{DeviceSerialKey}")] HttpRequest req, string DeviceSerialKey)
         {
             try
             {
                 _logger.LogInformation("C# HTTP trigger GetConsumptionBySerialKey function processed a request.");
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                var serialKey = req.Query["DeviceSerialKey"];
                 string msg = "";
 
-                if (string.IsNullOrWhiteSpace(serialKey) == true) { return new BadRequestObjectResult("DeviceSerialKey is required"); }
+                if (string.IsNullOrWhiteSpace(DeviceSerialKey) == true) { return new BadRequestObjectResult("DeviceSerialKey is required"); }
                 else
                 {
-                    ConsumptionServiceModel consumption = _consumptionService.GetConsumptionBySerialKey(serialKey);
+                    List<ConsumptionServiceModel> consumption = _consumptionService.GetConsumptionBySerialKey(DeviceSerialKey);
                     return new OkObjectResult(new { msg = msg, userData = consumption });
                 }
 

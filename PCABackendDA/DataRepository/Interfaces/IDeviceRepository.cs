@@ -13,7 +13,7 @@ namespace PCABackendDA.DataRepository.Interfaces
         DeviceInfo UpdateDevice(DeviceInfo deviceInfo);
         DeviceInfo GetDeviceById(int deviceId);
         DeviceInfo GetDeviceBySerialKey(string serialKey);
-        List<DeviceInfo> GetDeviceByUserCode(string userCode);
+        List<DeviceInfo> GetDeviceByUserProfileId(int userProfileId);
         bool IsDeviceSerialKeyAvailable(string serialKey);
 
     }

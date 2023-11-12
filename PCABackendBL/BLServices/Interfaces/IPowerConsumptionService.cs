@@ -11,6 +11,6 @@ namespace PCABackendBL.BLServices.Interfaces
     public interface IPowerConsumptionService
     {
         PowerConsumptionInfo InsertConsumption(ConsumptionServiceModel consumption);
-        ConsumptionServiceModel GetConsumptionBySerialKey(string serialKey);
+        List<ConsumptionServiceModel> GetConsumptionBySerialKey(string serialKey);
     }
 }

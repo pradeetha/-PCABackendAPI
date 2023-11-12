@@ -22,8 +22,7 @@ namespace PCABackendAPI
         private readonly ILogger<UserLoginFunction> _logger;
         private readonly JWTTokenManager jwtTokenManager;
         private readonly IUserProfileService _userProfileService;
-
-
+  
         public UserLoginFunction(ILogger<UserLoginFunction> log, IUserProfileService userProfileService)
         {
             _logger = log;
@@ -31,12 +30,12 @@ namespace PCABackendAPI
             jwtTokenManager = new JWTTokenManager();
         }
 
-        [FunctionName("Login")]
+        [FunctionName("UserLogin")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "LoginManagement" })]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UserLogin), Description = "Parameters", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "")] HttpRequest req, ILogger log)
+        public async Task<IActionResult> UserLogin(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v1/UserLogin/")] HttpRequest req, ILogger log)
         {
             try
             {

@@ -14,7 +14,7 @@ namespace PCABackendBL.BLServices.Interfaces
         DeviceInfo UpdateDevice(DeviceInfoServiceModel device);
         DeviceInfo GetDeviceById(int deviceId);
         DeviceInfo GetDeviceBySerialKey(string serialKey);
-        List<DeviceInfo> GetDeviceByUserCode(string userCode);
+        List<DeviceInfoServiceModel> GetDeviceByUserProfileId(int userProfileId);
         bool IsDeviceSerialKeyAvailable(string serialKey);
     }
 }

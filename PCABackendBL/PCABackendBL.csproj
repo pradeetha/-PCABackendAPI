@@ -181,7 +181,6 @@
     <Compile Include="BLServices\Interfaces\IUserProfileService.cs" />
     <Compile Include="BLServices\PowerConsumptionService.cs" />
     <Compile Include="BLServices\UserProfileService.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="Helper\BasicAuthManager.cs" />
     <Compile Include="Helper\APIMappers\ConsumptionMapper.cs" />
     <Compile Include="Helper\APIMappers\DeviceMapper.cs" />

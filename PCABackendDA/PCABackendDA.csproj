@@ -247,7 +247,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="DataConnection.cs" />
     <Compile Include="DataModels\DeviceInfo.cs" />
     <Compile Include="DataModels\PowerConsumptionInfo.cs" />

@@ -19,11 +19,11 @@ namespace PCABackendBL.Helper
             {
                 ConsumedUnits = consumption.ConsumedUnits,
                 DeviceSerialKey = consumption.DeviceSerialKey,
+                LogTimestamp = consumption.LogTimestamp,
                 DeviceId = deviceInfo.DeviceId,
                 UserProfileId = deviceInfo.UserProfileId,
                 UserCode = deviceInfo.UserCode,
                 ApplianceName = deviceInfo.ApplianceName,
-                LogTimestamp = DateTime.UtcNow,
                 lastModified = DateTime.UtcNow
             };
 
@@ -37,7 +37,8 @@ namespace PCABackendBL.Helper
             var consumption = new ConsumptionServiceModel()
             {
                 DeviceSerialKey=consumptionInfo.DeviceSerialKey,
-                ConsumedUnits=consumptionInfo.ConsumedUnits
+                ConsumedUnits=consumptionInfo.ConsumedUnits,
+                LogTimestamp=consumptionInfo.LogTimestamp
             };
             return consumption;
         }

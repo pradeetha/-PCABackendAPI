@@ -8,6 +8,7 @@ namespace PCABackendBL.APIEntity
 {
     public class DeviceInfoServiceModel
     {
+        public int DeviceId { get; set; }
         public string DeviceSerialKey { get; set; }
         public string DeviceType { get; set; }
         public string ApplianceName { get; set; }
@@ -15,6 +16,8 @@ namespace PCABackendBL.APIEntity
         public string Address { get; set; }
         public string UserName { get; set; }
         public float PowerThresholdValue { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime lastModified { get; set; }
 
     }
 }
