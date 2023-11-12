@@ -1,5 +1,4 @@
 ﻿using PCABackendBL.APIEntity;
-using PCABackendBL.BLServices;
 using PCABackendDA.DataModels;
 using System;
 using System.Collections.Generic;
@@ -19,6 +18,7 @@ namespace PCABackendBL.Helper
 
             var deviceInfo = new DeviceInfo()
             {
+              
                 DeviceSerialKey = device.DeviceSerialKey,
                 DeviceId = deviceId,
                 ApplianceName = device.ApplianceName,
@@ -36,7 +36,7 @@ namespace PCABackendBL.Helper
             return deviceInfo;
         }
 
-        public static DeviceInfoServiceModel DALToApi(this DeviceInfo deviceInfo)
+        public static DeviceInfoServiceModel DALToApi(this DeviceInfo deviceInfo, UserProfile userProfile)
         {
             if (deviceInfo == null) return null;
 
@@ -47,7 +47,11 @@ namespace PCABackendBL.Helper
                 DeviceType = deviceInfo.DeviceType,
                 InternalLocation = deviceInfo.InternalLocation,
                 PowerThresholdValue= deviceInfo.PowerThresholdValue,
-                Address = deviceInfo.Address
+                Address = deviceInfo.Address,
+                DeviceId= deviceInfo.DeviceId,
+                UserName=userProfile.Username,
+                CreatedDate=deviceInfo.CreatedDate,
+                lastModified=deviceInfo.lastModified
             };
             return device;
         }

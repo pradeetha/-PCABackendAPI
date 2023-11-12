@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using PCABackendBL.APIEntity;
 using PCABackendBL.BLServices;
 using PCABackendBL.BLServices.Interfaces;
+using PCABackendBL.Helper;
 using PCABackendDA.DataModels;
 
 
@@ -37,12 +38,12 @@ namespace PCABackendAPI
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(DeviceInfoServiceModel), Description = "Parameters", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "put", Route = null)] HttpRequest req)
+        public async Task<IActionResult> DeviceRegistration([HttpTrigger(AuthorizationLevel.Function, "put", Route = "v1/DeviceInfo/")] HttpRequest req)
         {
             try
             {
-             
-              
+
+
                 _logger.LogInformation("C# HTTP trigger DeviceRegistration function processed a request.");
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -55,17 +56,15 @@ namespace PCABackendAPI
                 if (deviceInfo?.DeviceSerialKey == null) { return new BadRequestObjectResult("DeviceSerialKey is required"); }
                 else
                 {
-                    if (_deviceService.IsDeviceSerialKeyAvailable(deviceInfo.DeviceSerialKey))
+                    if (deviceInfo.DeviceId > 0)
                     {
-                       
-                        
                         savedobj = _deviceService.UpdateDevice(deviceInfo);
-                        msg = $"The Device {savedobj.DeviceSerialKey} is saved successfully.The Device code is {savedobj.DeviceSerialKey} and the house code is {savedobj.UserProfileId}";
+                        msg = $"The Device {savedobj.DeviceSerialKey} is updated successfully.";
                     }
                     else
                     {
                         savedobj = _deviceService.RegisterDevice(deviceInfo);
-                        msg = $"The Device {savedobj.DeviceSerialKey} is saved successfully.The Device code is {savedobj.DeviceSerialKey} and the house code is {savedobj.UserProfileId}";
+                        msg = $"The Device {savedobj.DeviceSerialKey} is saved successfully.";
                     }
                     return new OkObjectResult(new { msg = msg, userData = savedobj });
                 }
@@ -81,24 +80,23 @@ namespace PCABackendAPI
 
         #region GetDeviceBySerialKey
         [FunctionName("GetDeviceBySerialKey")]
-        [OpenApiOperation(operationId: "GetDeviceBySerialKey", tags: new[] { "DeviceInfo" })]
+        [OpenApiOperation(operationId: "GetDeviceBySerialKey", tags: new[] { "DeviceManagement" })]
         [OpenApiSecurity("basic_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Basic)]
-        [OpenApiParameter(name: "DeviceSerialKey", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **DeviceSerialKey** parameter")]
+        [OpenApiParameter(name: "DeviceSerialKey", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The **DeviceSerialKey** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> GetDeviceBySerialKey([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
+        public async Task<IActionResult> GetDeviceBySerialKey([HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/DeviceBySerialKey/{DeviceSerialKey}")] HttpRequest req, string DeviceSerialKey)
         {
             try
             {
                 _logger.LogInformation("C# HTTP trigger GetDeviceBySerialKey function processed a request.");
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                var serialKey = req.Query["DeviceSerialKey"];
                 string msg = "";
 
-                if (string.IsNullOrWhiteSpace(serialKey) == true) { return new BadRequestObjectResult("DeviceSerialKey is required"); }
+                if (string.IsNullOrWhiteSpace(DeviceSerialKey) == true) { return new BadRequestObjectResult("DeviceSerialKey is required"); }
                 else
                 {
-                    DeviceInfo device = _deviceService.GetDeviceBySerialKey(serialKey);
+                    DeviceInfo device = _deviceService.GetDeviceBySerialKey(DeviceSerialKey);
 
                     return new OkObjectResult(new { msg = msg, userData = device });
                 }
@@ -114,18 +112,18 @@ namespace PCABackendAPI
 
         #region GetDeviceById
         [FunctionName("GetDeviceById")]
-        [OpenApiOperation(operationId: "GetDeviceById", tags: new[] { "DeviceInfo" })]
+        [OpenApiOperation(operationId: "GetDeviceById", tags: new[] { "DeviceManagement" })]
         [OpenApiSecurity("basic_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Basic)]
-        [OpenApiParameter(name: "DeviceId", In = ParameterLocation.Query, Required = true, Type = typeof(Int32), Description = "The **DeviceId** parameter")]
+        [OpenApiParameter(name: "DeviceId", In = ParameterLocation.Path, Required = true, Type = typeof(Int32), Description = "The **DeviceId** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> GetDeviceById([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
+        public async Task<IActionResult> GetDeviceById([HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/DeviceById/{DeviceId}")] HttpRequest req, string DeviceId)
         {
             try
             {
                 _logger.LogInformation("C# HTTP trigger GetDeviceBySerialKey function processed a request.");
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                int deviceId = int.Parse(req.Query["DeviceId"]);
+                int deviceId = int.Parse(DeviceId);
                 string msg = "";
 
                 if (deviceId == 0) { return new BadRequestObjectResult("DeviceId is required"); }
@@ -145,26 +143,25 @@ namespace PCABackendAPI
         }
         #endregion
 
-        #region GetDeviceByUserCode
-        [FunctionName("GetDeviceByUserCode")]
-        [OpenApiOperation(operationId: "GetDeviceByUserCode", tags: new[] { "DeviceInfo" })]
+        #region GetDeviceByUserProfileId
+        [FunctionName("GetDeviceByUserProfileId")]
+        [OpenApiOperation(operationId: "GetDeviceByUserProfileId", tags: new[] { "DeviceManagement" })]
         [OpenApiSecurity("basic_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Basic)]
-        [OpenApiParameter(name: "UserCode", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **UserCode** parameter")]
+        [OpenApiParameter(name: "UserProfileId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The **UserProfileId** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> GetDeviceByUserCode([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
+        public async Task<IActionResult> GetDeviceByUserProfileId([HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/DeviceByUserProfileId/{UserProfileId}")] HttpRequest req, string UserProfileId)
         {
             try
             {
-                _logger.LogInformation("C# HTTP trigger GetDeviceByUserCode function processed a request.");
+                _logger.LogInformation("C# HTTP trigger GetDeviceByUserProfileId function processed a request.");
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                string userCode = req.Query["UserCode"];
                 string msg = "";
 
-                if (string.IsNullOrWhiteSpace(userCode) == true) { return new BadRequestObjectResult("UserCode is required"); }
+                if (string.IsNullOrWhiteSpace(UserProfileId) == true) { return new BadRequestObjectResult("UserProfileId is required"); }
                 else
                 {
-                    List<DeviceInfo> devices = _deviceService.GetDeviceByUserCode(userCode);
+                    List<DeviceInfoServiceModel> devices = _deviceService.GetDeviceByUserProfileId(int.Parse(UserProfileId));
 
                     return new OkObjectResult(new { msg = msg, userData = devices });
                 }

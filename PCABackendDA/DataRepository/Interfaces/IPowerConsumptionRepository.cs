@@ -10,6 +10,6 @@ namespace PCABackendDA.DataRepository.Interfaces
     public interface IPowerConsumptionRepository
     {
         PowerConsumptionInfo InsertConsumption(PowerConsumptionInfo powerConsumption);
-        PowerConsumptionInfo GetConsumptionBySerialKey(string serialKey);
+        List<PowerConsumptionInfo> GetConsumptionBySerialKey(string serialKey);
     }
 }

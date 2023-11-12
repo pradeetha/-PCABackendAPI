@@ -8,6 +8,7 @@ namespace PCABackendBL.APIEntity
 {
     public class UserProfileServiceModel
     {
+        public int UserProfileId { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string FullName { get; set; }

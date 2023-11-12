@@ -14,37 +14,22 @@ namespace PCABackendBL.Helper
     {
         public static UserProfile ApiToDAL(this UserProfileServiceModel userProfile, int userProfileId = 0)
         {
-            var userProfileInfo = new UserProfile();
+
             MD5EncryptionManager mD5EncryptionManager = new MD5EncryptionManager();
             if (userProfile == null) return null;
-            if (userProfileId == 0)
+
+            var userProfileInfo = new UserProfile()
             {
-                userProfileInfo = new UserProfile()
-                {
-                    Username = userProfile.Username,
-                    Address = userProfile.Address,
-                    ContactNumber = userProfile.ContactNumber,
-                    Email = userProfile.Email,
-                    FullName = userProfile.FullName,
-                    lastModified = DateTime.UtcNow,
-                    CreatedDate = DateTime.UtcNow,
-                    Password = mD5EncryptionManager.GetMD5Hash(userProfile.Password)
-                };
-            }
-            else
-            {
-                userProfileInfo = new UserProfile()
-                {
-                    Username = userProfile.Username,
-                    Address = userProfile.Address,
-                    ContactNumber = userProfile.ContactNumber,
-                    Email = userProfile.Email,
-                    FullName = userProfile.FullName,
-                    lastModified = DateTime.UtcNow,
-                    Password = mD5EncryptionManager.GetMD5Hash(userProfile.Password),
-                    UserProfileId = userProfileId
-                };
-            }
+                Username = userProfile.Username,
+                Address = userProfile.Address,
+                ContactNumber = userProfile.ContactNumber,
+                Email = userProfile.Email,
+                FullName = userProfile.FullName,
+                lastModified = DateTime.UtcNow,
+                Password = mD5EncryptionManager.GetMD5Hash(userProfile.Password),
+                UserProfileId = userProfileId
+            };
+
             return userProfileInfo;
         }
 
@@ -55,11 +40,12 @@ namespace PCABackendBL.Helper
             var userProfile = new UserProfileServiceModel()
             {
                 Address = userProfileInfo.Address,
-                ContactNumber= userProfileInfo.ContactNumber,
+                ContactNumber = userProfileInfo.ContactNumber,
                 Email = userProfileInfo.Email,
                 FullName = userProfileInfo.FullName,
-                lastModified= DateTime.UtcNow,
-                Password= "",
+                lastModified = DateTime.UtcNow,
+                Password = "",
+                UserProfileId = userProfileInfo.UserProfileId,
                 Username = userProfileInfo.Username
             };
             return userProfile;

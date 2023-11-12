@@ -41,18 +41,18 @@ namespace PCABackendDA.DataRepository
         }
 
         #region GetConsumptionBySerialKey
-        public PowerConsumptionInfo GetConsumptionBySerialKey(string serialKey)
+        public List<PowerConsumptionInfo> GetConsumptionBySerialKey(string serialKey)
         {
             using (TransactionScope scope1 = new TransactionScope())
             {
                 try
                 {
-                    IMongoCollection<PowerConsumptionInfo> consumptionInfoCollection = _mongoDatabase.GetCollection<PowerConsumptionInfo>("PowerConsumptionInfo");
+                    IMongoCollection<PowerConsumptionInfo> consumptionInfoCollection = _mongoDatabase.GetCollection<PowerConsumptionInfo>("ConsumptionInfo");
                     FilterDefinition<PowerConsumptionInfo> filterObj = Builders<PowerConsumptionInfo>.Filter.
                                                          Where(x => x.DeviceSerialKey.Equals(serialKey));
 
 
-                    var result = consumptionInfoCollection.Find(filterObj).FirstOrDefault();
+                    var result = consumptionInfoCollection.Find(filterObj).ToList();
                     return result;
                 }
                 catch (Exception ex) { scope1.Dispose(); throw ex; }

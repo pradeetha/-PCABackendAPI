@@ -34,10 +34,12 @@ namespace PCABackendBL.BLServices
 
         }
 
-        public ConsumptionServiceModel GetConsumptionBySerialKey(string serialKey)
+        public List<ConsumptionServiceModel> GetConsumptionBySerialKey(string serialKey)
         {
+            List<ConsumptionServiceModel> consumptions = new List<ConsumptionServiceModel>();
             var consumptionInfo = _consumptionInforRepository.GetConsumptionBySerialKey(serialKey);
-            return consumptionInfo.DALToApi();
+            foreach (var consumption in consumptionInfo) { consumptions.Add(consumption.DALToApi()); }
+            return consumptions;
         }
     }
 }
