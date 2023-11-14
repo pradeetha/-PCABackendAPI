@@ -27,7 +27,9 @@ namespace PCABackendBL.Helper
                 FullName = userProfile.FullName,
                 lastModified = DateTime.UtcNow,
                 Password = mD5EncryptionManager.GetMD5Hash(userProfile.Password),
-                UserProfileId = userProfileId
+                UserProfileId = userProfileId,
+                CreatedDate = userProfile.CreatedDate
+                
             };
 
             return userProfileInfo;
@@ -47,6 +49,7 @@ namespace PCABackendBL.Helper
                 Password = "",
                 UserProfileId = userProfileInfo.UserProfileId,
                 Username = userProfileInfo.Username
+
             };
             return userProfile;
         }
