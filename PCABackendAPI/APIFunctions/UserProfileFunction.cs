@@ -37,7 +37,7 @@ namespace PCABackendAPI
 
         [FunctionName("CreateOrUpdateUserProfile")]
         [OpenApiOperation(operationId: "CreateOrUpdateUserProfile", tags: new[] { "UserProfileManagement" })]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UserProfileServiceModel), Description = "Parameters", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> CreateOrUpdateUserProfile([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "v1/UserProfile/")] HttpRequest req)
@@ -72,7 +72,7 @@ namespace PCABackendAPI
 
         [FunctionName("GetUserProfile")]
         [OpenApiOperation(operationId: "GetUserProfileById", tags: new[] { "UserProfileManagement" })]
-        [OpenApiSecurity("basic_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Basic)]
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiParameter(name: "Id", In = ParameterLocation.Path, Required = true, Type = typeof(int), Description = "The **UserProfileId** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> GetUserProfileById(
@@ -82,7 +82,7 @@ namespace PCABackendAPI
             {
                 _logger.LogInformation("C# HTTP trigger function 'GetUserProfile' processed a request.");
 
-
+                if (!_jwtTokenManager.ValidateJWTToken(req)) { return new UnauthorizedResult(); }
                 var userProfileObj = _userProfileService.GetUserProfileData(Convert.ToInt32(Id));
                 string msg = userProfileObj == null ? "Invalid user " : $"User found!";
                 return new OkObjectResult(new { msg = msg, userData = userProfileObj });

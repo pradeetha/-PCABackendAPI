@@ -41,5 +41,19 @@ namespace PCABackendBL.BLServices
             foreach (var consumption in consumptionInfo) { consumptions.Add(consumption.DALToApi()); }
             return consumptions;
         }
+        public List<ConsumptionServiceModel> GetConsumptionByDeviceId(int deviceId)
+        {
+            List<ConsumptionServiceModel> consumptions = new List<ConsumptionServiceModel>();
+            var consumptionInfo = _consumptionInforRepository.GetConsumptionByDeviceId(deviceId);
+            foreach (var consumption in consumptionInfo) { consumptions.Add(consumption.DALToApi()); }
+            return consumptions;
+        }
+        public List<ConsumptionServiceModel> GetConsumptionByUserProfileId(int userProfileId)
+        {
+            List<ConsumptionServiceModel> consumptions = new List<ConsumptionServiceModel>();
+            var consumptionInfo = _consumptionInforRepository.GetConsumptionByUserProfileId(userProfileId);
+            foreach (var consumption in consumptionInfo) { consumptions.Add(consumption.DALToApi()); }
+            return consumptions;
+        }
     }
 }

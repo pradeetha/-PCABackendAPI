@@ -60,5 +60,47 @@ namespace PCABackendDA.DataRepository
         }
         #endregion
 
+        #region GetConsumptionByDeviceId
+        public List<PowerConsumptionInfo> GetConsumptionByDeviceId(int deviceId)
+        {
+            using (TransactionScope scope1 = new TransactionScope())
+            {
+                try
+                {
+                    IMongoCollection<PowerConsumptionInfo> consumptionInfoCollection = _mongoDatabase.GetCollection<PowerConsumptionInfo>("ConsumptionInfo");
+                    FilterDefinition<PowerConsumptionInfo> filterObj = Builders<PowerConsumptionInfo>.Filter.
+                                                         Where(x => x.DeviceId.Equals(deviceId));
+
+
+                    var result = consumptionInfoCollection.Find(filterObj).ToList();
+                    return result;
+                }
+                catch (Exception ex) { scope1.Dispose(); throw ex; }
+            }
+        }
+        #endregion
+
+        #region GetConsumptionByUserProfileId
+        public List<PowerConsumptionInfo> GetConsumptionByUserProfileId(int userProfileId)
+        {
+            using (TransactionScope scope1 = new TransactionScope())
+            {
+                try
+                {
+                    IMongoCollection<PowerConsumptionInfo> consumptionInfoCollection = _mongoDatabase.GetCollection<PowerConsumptionInfo>("ConsumptionInfo");
+                    FilterDefinition<PowerConsumptionInfo> filterObj = Builders<PowerConsumptionInfo>.Filter.
+                                                         Where(x => x.UserProfileId.Equals(userProfileId));
+
+
+                    var result = consumptionInfoCollection.Find(filterObj).ToList();
+                    return result;
+                }
+                catch (Exception ex) { scope1.Dispose(); throw ex; }
+            }
+        }
+        #endregion
+
+
+
     }
 }

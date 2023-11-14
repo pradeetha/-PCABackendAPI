@@ -25,17 +25,19 @@ namespace PCABackendAPI
     {
         private readonly ILogger<DeviceRegistrationFunction> _logger;
         private IDeviceService _deviceService;
+        JWTTokenManager _jwtTokenManager;
         public DeviceRegistrationFunction(ILogger<DeviceRegistrationFunction> log, IDeviceService deviceService)
         {
             _logger = log;
             _deviceService = deviceService;
+            _jwtTokenManager = new JWTTokenManager();
 
         }
 
         #region DeviceRegistration
         [FunctionName("DeviceRegistration")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "DeviceManagement" })]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(DeviceInfoServiceModel), Description = "Parameters", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> DeviceRegistration([HttpTrigger(AuthorizationLevel.Function, "put", Route = "v1/DeviceInfo/")] HttpRequest req)
@@ -46,6 +48,7 @@ namespace PCABackendAPI
 
                 _logger.LogInformation("C# HTTP trigger DeviceRegistration function processed a request.");
 
+                if (!_jwtTokenManager.ValidateJWTToken(req)) { return new UnauthorizedResult(); }
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 dynamic data = JsonConvert.DeserializeObject(requestBody);
                 DeviceInfoServiceModel deviceInfo = JsonConvert.DeserializeObject<DeviceInfoServiceModel>(requestBody);
@@ -66,7 +69,7 @@ namespace PCABackendAPI
                         savedobj = _deviceService.RegisterDevice(deviceInfo);
                         msg = $"The Device {savedobj.DeviceSerialKey} is saved successfully.";
                     }
-                    return new OkObjectResult(new { msg = msg, userData = savedobj });
+                    return new OkObjectResult(new { msg = msg, deviceData = savedobj });
                 }
 
             }
@@ -81,7 +84,7 @@ namespace PCABackendAPI
         #region GetDeviceBySerialKey
         [FunctionName("GetDeviceBySerialKey")]
         [OpenApiOperation(operationId: "GetDeviceBySerialKey", tags: new[] { "DeviceManagement" })]
-        [OpenApiSecurity("basic_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Basic)]
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiParameter(name: "DeviceSerialKey", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The **DeviceSerialKey** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> GetDeviceBySerialKey([HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/DeviceBySerialKey/{DeviceSerialKey}")] HttpRequest req, string DeviceSerialKey)
@@ -90,6 +93,7 @@ namespace PCABackendAPI
             {
                 _logger.LogInformation("C# HTTP trigger GetDeviceBySerialKey function processed a request.");
 
+                if (!_jwtTokenManager.ValidateJWTToken(req)) { return new UnauthorizedResult(); }
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 string msg = "";
 
@@ -97,8 +101,8 @@ namespace PCABackendAPI
                 else
                 {
                     DeviceInfo device = _deviceService.GetDeviceBySerialKey(DeviceSerialKey);
-
-                    return new OkObjectResult(new { msg = msg, userData = device });
+                    msg = "Device found.";
+                    return new OkObjectResult(new { msg = msg, deviceData = device });
                 }
 
             }
@@ -113,7 +117,7 @@ namespace PCABackendAPI
         #region GetDeviceById
         [FunctionName("GetDeviceById")]
         [OpenApiOperation(operationId: "GetDeviceById", tags: new[] { "DeviceManagement" })]
-        [OpenApiSecurity("basic_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Basic)]
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiParameter(name: "DeviceId", In = ParameterLocation.Path, Required = true, Type = typeof(Int32), Description = "The **DeviceId** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> GetDeviceById([HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/DeviceById/{DeviceId}")] HttpRequest req, string DeviceId)
@@ -122,6 +126,7 @@ namespace PCABackendAPI
             {
                 _logger.LogInformation("C# HTTP trigger GetDeviceBySerialKey function processed a request.");
 
+                if (!_jwtTokenManager.ValidateJWTToken(req)) { return new UnauthorizedResult(); }
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 int deviceId = int.Parse(DeviceId);
                 string msg = "";
@@ -130,8 +135,8 @@ namespace PCABackendAPI
                 else
                 {
                     DeviceInfo device = _deviceService.GetDeviceById(deviceId);
-
-                    return new OkObjectResult(new { msg = msg, userData = device });
+                    msg = "Device found.";
+                    return new OkObjectResult(new { msg = msg, deviceData = device });
                 }
 
             }
@@ -146,7 +151,7 @@ namespace PCABackendAPI
         #region GetDeviceByUserProfileId
         [FunctionName("GetDeviceByUserProfileId")]
         [OpenApiOperation(operationId: "GetDeviceByUserProfileId", tags: new[] { "DeviceManagement" })]
-        [OpenApiSecurity("basic_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Basic)]
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiParameter(name: "UserProfileId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The **UserProfileId** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> GetDeviceByUserProfileId([HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/DeviceByUserProfileId/{UserProfileId}")] HttpRequest req, string UserProfileId)
@@ -155,6 +160,7 @@ namespace PCABackendAPI
             {
                 _logger.LogInformation("C# HTTP trigger GetDeviceByUserProfileId function processed a request.");
 
+                if (!_jwtTokenManager.ValidateJWTToken(req)) { return new UnauthorizedResult(); }
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 string msg = "";
 
@@ -162,8 +168,8 @@ namespace PCABackendAPI
                 else
                 {
                     List<DeviceInfoServiceModel> devices = _deviceService.GetDeviceByUserProfileId(int.Parse(UserProfileId));
-
-                    return new OkObjectResult(new { msg = msg, userData = devices });
+                    msg = "Device found.";
+                    return new OkObjectResult(new { msg = msg, deviceData = devices });
                 }
 
             }

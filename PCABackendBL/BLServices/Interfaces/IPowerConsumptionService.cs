@@ -12,5 +12,7 @@ namespace PCABackendBL.BLServices.Interfaces
     {
         PowerConsumptionInfo InsertConsumption(ConsumptionServiceModel consumption);
         List<ConsumptionServiceModel> GetConsumptionBySerialKey(string serialKey);
+        List<ConsumptionServiceModel> GetConsumptionByDeviceId(int deviceId);
+        List<ConsumptionServiceModel> GetConsumptionByUserProfileId(int userProfileId);
     }
 }
