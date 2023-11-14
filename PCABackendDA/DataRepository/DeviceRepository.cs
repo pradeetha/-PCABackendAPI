@@ -17,7 +17,7 @@ namespace PCABackendDA.DataRepository
         private readonly IMongoDatabase _mongoDatabase;
         IDataConnection _dataConnection;
 
-    
+
         public DeviceRepository(IDataConnection dataConnection)
         {
             this._dataConnection = dataConnection;
@@ -105,7 +105,7 @@ namespace PCABackendDA.DataRepository
             }
         }
 
-        public List<DeviceInfo> GetDeviceByUserCode(string userCode)
+        public List<DeviceInfo> GetDeviceByUserProfileId(int userProfileId)
         {
             using (TransactionScope scope1 = new TransactionScope())
             {
@@ -113,7 +113,7 @@ namespace PCABackendDA.DataRepository
                 {
                     IMongoCollection<DeviceInfo> deviceInfoCollection = _mongoDatabase.GetCollection<DeviceInfo>("DeviceInfo");
                     FilterDefinition<DeviceInfo> filterObj = Builders<DeviceInfo>.Filter.
-                                                         Where(x => x.UserCode.Equals(userCode));
+                                                         Where(x => x.UserProfileId.Equals(userProfileId));
 
 
                     var result = deviceInfoCollection.Find(filterObj).ToList();

@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace PCABackendBL.BLServices
 {
-    public class DeviceService: IDeviceService
+    public class DeviceService : IDeviceService
     {
         IDeviceRepository _deviceRepository;
         IUserProfileRepository _userProfileRepository;
 
-        
-        public DeviceService(IDeviceRepository  deviceRepository, IUserProfileRepository userProfileRepository)
+
+        public DeviceService(IDeviceRepository deviceRepository, IUserProfileRepository userProfileRepository)
         {
             _deviceRepository = deviceRepository;
             _userProfileRepository = userProfileRepository;
@@ -74,21 +74,26 @@ namespace PCABackendBL.BLServices
 
         public DeviceInfo GetDeviceBySerialKey(string serialKey)
         {
-            return _deviceRepository.GetDeviceBySerialKey(serialKey);
+            var deviceInfo= _deviceRepository.GetDeviceBySerialKey(serialKey);
+            return deviceInfo;
         }
 
         /// <summary>
-        /// Get Device By User Code
+        /// Get Device By User Profile id
         /// </summary>
         /// <param name="userCode"></param>
         /// <returns></returns>
-        public List<DeviceInfo> GetDeviceByUserCode(string userCode)
+        public List<DeviceInfoServiceModel> GetDeviceByUserProfileId(int userProfileId)
         {
-            return _deviceRepository.GetDeviceByUserCode(userCode);
+            List<DeviceInfoServiceModel> deviceList= new List<DeviceInfoServiceModel>();
+            var deviceInfo = _deviceRepository.GetDeviceByUserProfileId(userProfileId);
+            var userProfile = _userProfileRepository.GetUserProfileData(userProfileId);
+            foreach (var device in deviceInfo) { deviceList.Add(device.DALToApi(userProfile)); }
+            return deviceList;
         }
 
         /// <summary>
-        /// 
+        /// Check device serial is available
         /// </summary>
         /// <param name="serialKey"></param>
         /// <returns></returns>

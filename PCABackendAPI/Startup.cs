@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PCABackendBL.BLServices;
@@ -22,7 +23,8 @@ namespace PCABackendAPI
         {
             //builder.Services.AddHttpClient();
 
-            builder.Services.AddScoped<IDataConnection>((s) => {
+            builder.Services.AddScoped<IDataConnection>((s) =>
+            {
                 return new DataConnection();
             });
             builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
@@ -33,6 +35,20 @@ namespace PCABackendAPI
             builder.Services.AddScoped<IPowerConsumptionService, PowerConsumptionService>();
             builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 
+
+            builder.Services.AddVersionedApiExplorer(o =>
+            {
+                o.GroupNameFormat = "'v'VVV";
+                o.SubstituteApiVersionInUrl = true;
+            });
+            builder.Services.AddApiVersioning(config =>
+            {
+                config.DefaultApiVersion = new ApiVersion(1, 0);
+                config.AssumeDefaultVersionWhenUnspecified = true;
+                config.ReportApiVersions = true;
+            });
+
         }
+       
     }
 }

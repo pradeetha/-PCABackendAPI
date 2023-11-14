@@ -8,7 +8,6 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using PCABackendDA.DataModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,10 +37,10 @@ namespace PCABackendAPI
 
         [FunctionName("CreateOrUpdateUserProfile")]
         [OpenApiOperation(operationId: "CreateOrUpdateUserProfile", tags: new[] { "UserProfileManagement" })]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UserProfileServiceModel), Description = "Parameters", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> CreateOrUpdateUserProfile([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = null)] HttpRequest req)
+        public async Task<IActionResult> CreateOrUpdateUserProfile([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "v1/UserProfile/")] HttpRequest req)
         {
             try
             {
@@ -73,18 +72,18 @@ namespace PCABackendAPI
 
         [FunctionName("GetUserProfile")]
         [OpenApiOperation(operationId: "GetUserProfileById", tags: new[] { "UserProfileManagement" })]
-        [OpenApiSecurity("basic_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Basic)]
-        [OpenApiParameter(name: "id", In = ParameterLocation.Path, Required = true, Type = typeof(int), Description = "The **UserProfileId** parameter")]
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
+        [OpenApiParameter(name: "Id", In = ParameterLocation.Path, Required = true, Type = typeof(int), Description = "The **UserProfileId** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> GetUserProfileById(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "userprofile/{id}")] HttpRequest req, string id)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/UserProfile/{Id}")] HttpRequest req, string Id)
         {
             try
             {
                 _logger.LogInformation("C# HTTP trigger function 'GetUserProfile' processed a request.");
 
-
-                var userProfileObj = _userProfileService.GetUserProfileData(Convert.ToInt32(id));
+                if (!_jwtTokenManager.ValidateJWTToken(req)) { return new UnauthorizedResult(); }
+                var userProfileObj = _userProfileService.GetUserProfileData(Convert.ToInt32(Id));
                 string msg = userProfileObj == null ? "Invalid user " : $"User found!";
                 return new OkObjectResult(new { msg = msg, userData = userProfileObj });
 
