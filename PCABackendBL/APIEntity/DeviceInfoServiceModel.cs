@@ -16,7 +16,7 @@ namespace PCABackendBL.APIEntity
         public string Address { get; set; }
         public string UserName { get; set; }
         public float PowerThresholdValue { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public string CreatedDate { get; set; } = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss");
         public DateTime lastModified { get; set; }
 
     }

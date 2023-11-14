@@ -28,7 +28,7 @@ namespace PCABackendBL.Helper
                 UserProfileId = userProfile.UserProfileId,
                 UserCode = userProfile.UserCode,
                 PowerThresholdValue = device.PowerThresholdValue,
-                CreatedDate = DateTime.UtcNow,
+                CreatedDate = device.CreatedDate,
                 lastModified = DateTime.UtcNow
                 
             };

@@ -16,5 +16,6 @@ namespace PCABackendBL.APIEntity
         public string ContactNumber { get; set; }
         public string Address { get; set; }
         public DateTime lastModified { get; set; }
+        public string CreatedDate { get; set; } = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss");
     }
 }
