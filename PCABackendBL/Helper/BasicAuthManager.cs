@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Text;
 
 namespace PCABackendBL.Helper
@@ -7,10 +8,15 @@ namespace PCABackendBL.Helper
     {
         private readonly string _configUsername;
         private readonly string _configPassword;
-        public BasicAuthManager()
+        private readonly IConfiguration _configuration;
+
+
+        public BasicAuthManager(IConfiguration configuration)
         {
-            _configUsername = Environment.GetEnvironmentVariable("APIBasicAuthUsername");
-            _configPassword = Environment.GetEnvironmentVariable("APIBasicAuthPassword");
+            _configuration = configuration;
+            _configUsername = _configuration["Values:APIBasicAuthUsername"];
+            _configPassword = _configuration["Values:APIBasicAuthPassword"];
+
         }
 
         public bool ValidateToken(string header)

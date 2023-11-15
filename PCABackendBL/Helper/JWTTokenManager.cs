@@ -5,6 +5,7 @@ using JWT.Serializers;
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace PCABackendBL.Helper
 {
@@ -16,17 +17,20 @@ namespace PCABackendBL.Helper
         private readonly IJwtEncoder _jwtEncoder;
         private readonly string _secretSecuritykey;
         private readonly int _tokenValidityInMinutes;
+        private readonly IConfiguration _configuration;
 
-        public JWTTokenManager()
+        public JWTTokenManager(IConfiguration configuration)
         {
             // JWT specific initialization.
             _algorithm = new HMACSHA256Algorithm();
             _serializer = new JsonNetSerializer();
             _base64Encoder = new JwtBase64UrlEncoder();
             _jwtEncoder = new JwtEncoder(_algorithm, _serializer, _base64Encoder);
-            _secretSecuritykey = Environment.GetEnvironmentVariable("APISecretKey");
-            _tokenValidityInMinutes = Convert.ToInt32(Environment.GetEnvironmentVariable("JWTTokenValidityInMinutes"));
+            _configuration = configuration;
+            _secretSecuritykey = _configuration["Values:APISecretKey"];
+            _tokenValidityInMinutes = int.Parse(_configuration["Values:JWTTokenValidityInMinutes"]);
         }
+
         public string GetJWTToken(string usernameParam)
         {
             Dictionary<string, object> claims = new Dictionary<string, object> { { "username", usernameParam },

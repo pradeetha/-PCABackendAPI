@@ -9,6 +9,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -26,14 +27,17 @@ namespace PCABackendAPI
         private IDeviceService _deviceService;
         BasicAuthManager _basicAuthManager;
         JWTTokenManager _jwtTokenManager;
+        private readonly IConfiguration _configuration;
 
-        public PowerConsumptionFunction(ILogger<PowerConsumptionFunction> log, IPowerConsumptionService consumptionService,IDeviceService deviceService)
+
+        public PowerConsumptionFunction(ILogger<PowerConsumptionFunction> log, IPowerConsumptionService consumptionService,IDeviceService deviceService, IConfiguration configuration)
         {
             _logger = log;
             _deviceService = deviceService;
             _consumptionService = consumptionService;
-            _basicAuthManager = new BasicAuthManager();
-            _jwtTokenManager = new JWTTokenManager();
+            _configuration = configuration;
+            _basicAuthManager = new BasicAuthManager(_configuration);
+            _jwtTokenManager = new JWTTokenManager(_configuration);
         }
 
         #region InsertConsumption
