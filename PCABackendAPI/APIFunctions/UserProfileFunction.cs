@@ -29,14 +29,12 @@ namespace PCABackendAPI
         private readonly ILogger<PowerConsumptionFunction> _logger;
         private IUserProfileService _userProfileService;
         JWTTokenManager _jwtTokenManager;
-        private readonly IConfiguration _configuration;
 
-        public UserProfileFunction(ILogger<PowerConsumptionFunction> log, IUserProfileService userProfileService, IConfiguration configuration)
+        public UserProfileFunction(ILogger<PowerConsumptionFunction> log, IUserProfileService userProfileService)
         {
             _logger = log;
             _userProfileService = userProfileService;
-            _configuration = configuration;
-            _jwtTokenManager = new JWTTokenManager(_configuration);
+            _jwtTokenManager = new JWTTokenManager();
         }
 
         [FunctionName("CreateOrUpdateUserProfile")]

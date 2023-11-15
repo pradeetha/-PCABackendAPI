@@ -3,7 +3,14 @@
     "PCABackendAPI": {
       "commandName": "Project",
       "commandLineArgs": "--port 7221",
-      "launchBrowser": false
+      "environmentVariables": {
+        "MongoDBURL": "mongodb+srv://sakunthalajayasundara:GP4wJMdvDqbOfifM@cluster0.izu7k1m.mongodb.net/?retryWrites=true&w=majority",
+        "MongoDBDatabase": "PowerConsumptionAssistant",
+        "APISecretKey": "digitalFortress2023API",
+        "JWTTokenValidityInMinutes": "5",
+        "APIBasicAuthUsername": "teamdigitalfortress",
+        "APIBasicAuthPassword": "DigitalFortress@2023"
+      }
     }
   }
 }

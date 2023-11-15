@@ -17,18 +17,16 @@ namespace PCABackendBL.Helper
         private readonly IJwtEncoder _jwtEncoder;
         private readonly string _secretSecuritykey;
         private readonly int _tokenValidityInMinutes;
-        private readonly IConfiguration _configuration;
 
-        public JWTTokenManager(IConfiguration configuration)
+        public JWTTokenManager()
         {
             // JWT specific initialization.
             _algorithm = new HMACSHA256Algorithm();
             _serializer = new JsonNetSerializer();
             _base64Encoder = new JwtBase64UrlEncoder();
             _jwtEncoder = new JwtEncoder(_algorithm, _serializer, _base64Encoder);
-            _configuration = configuration;
-            _secretSecuritykey = _configuration["Values:APISecretKey"];
-            _tokenValidityInMinutes = int.Parse(_configuration["Values:JWTTokenValidityInMinutes"]);
+            _secretSecuritykey = Environment.GetEnvironmentVariable("APISecretKey");
+            _tokenValidityInMinutes = int.Parse(Environment.GetEnvironmentVariable("JWTTokenValidityInMinutes"));
         }
 
         public string GetJWTToken(string usernameParam)
