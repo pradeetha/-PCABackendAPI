@@ -1,29 +1,31 @@
-﻿using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
+using MongoDB.Driver;
 
 namespace PCABackendDA
 {
 
     public class DataConnection : IDataConnection
     {
-        private string ConnectionString;
-        private string DatabaseName;
+        private string _connectionString;
+        private string _databaseName;
         public string DeviceCollectionName;
         public IMongoDatabase _mongoDatabaseRunTime;
         MongoClient _mongoClient;
+        private IConfiguration _configuration;
+
+        public DataConnection(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         public IMongoDatabase MongoDatabase()
         {
-            ConnectionString = Environment.GetEnvironmentVariable("MongoDBURL");
-            MongoClientSettings settings = MongoClientSettings.FromConnectionString(ConnectionString);
+            _connectionString = _configuration["Values:MongoDBURL"];
+            MongoClientSettings settings = MongoClientSettings.FromConnectionString(_connectionString);
             _mongoClient = new MongoClient(settings);
-            DatabaseName = Environment.GetEnvironmentVariable("MongoDBDatabase");
+            _databaseName = _configuration["Values:MongoDBDatabase"];
             //Set the Database
-            _mongoDatabaseRunTime = _mongoClient.GetDatabase(DatabaseName);
+            _mongoDatabaseRunTime = _mongoClient.GetDatabase(_databaseName);
             return _mongoDatabaseRunTime;
         }
     }

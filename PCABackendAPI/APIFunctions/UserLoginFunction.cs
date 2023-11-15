@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -22,12 +23,14 @@ namespace PCABackendAPI
         private readonly ILogger<UserLoginFunction> _logger;
         private readonly JWTTokenManager jwtTokenManager;
         private readonly IUserProfileService _userProfileService;
-  
-        public UserLoginFunction(ILogger<UserLoginFunction> log, IUserProfileService userProfileService)
+        private readonly IConfiguration _configuration;
+
+        public UserLoginFunction(ILogger<UserLoginFunction> log, IUserProfileService userProfileService, IConfiguration configuration)
         {
             _logger = log;
             _userProfileService = userProfileService;
-            jwtTokenManager = new JWTTokenManager();
+            _configuration = configuration;
+            jwtTokenManager = new JWTTokenManager(_configuration);
         }
 
         [FunctionName("UserLogin")]

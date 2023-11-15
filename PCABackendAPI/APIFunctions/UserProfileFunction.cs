@@ -20,6 +20,7 @@ using PCABackendBL.BLServices;
 using PCABackendBL.APIEntity;
 using PCABackendBL.BLServices.Interfaces;
 using PCABackendBL.Helper;
+using Microsoft.Extensions.Configuration;
 
 namespace PCABackendAPI
 {
@@ -28,11 +29,14 @@ namespace PCABackendAPI
         private readonly ILogger<PowerConsumptionFunction> _logger;
         private IUserProfileService _userProfileService;
         JWTTokenManager _jwtTokenManager;
-        public UserProfileFunction(ILogger<PowerConsumptionFunction> log, IUserProfileService userProfileService)
+        private readonly IConfiguration _configuration;
+
+        public UserProfileFunction(ILogger<PowerConsumptionFunction> log, IUserProfileService userProfileService, IConfiguration configuration)
         {
             _logger = log;
             _userProfileService = userProfileService;
-            _jwtTokenManager = new JWTTokenManager();
+            _configuration = configuration;
+            _jwtTokenManager = new JWTTokenManager(_configuration);
         }
 
         [FunctionName("CreateOrUpdateUserProfile")]

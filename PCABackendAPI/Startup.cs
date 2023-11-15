@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using PCABackendBL.BLServices;
 using PCABackendBL.BLServices.Interfaces;
 using PCABackendDA;
 using PCABackendDA.DataRepository;
 using PCABackendDA.DataRepository.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+using System.IO;
+
 
 [assembly: FunctionsStartup(typeof(PCABackendAPI.Startup))]
 namespace PCABackendAPI
@@ -23,10 +19,17 @@ namespace PCABackendAPI
         {
             //builder.Services.AddHttpClient();
 
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .Build();
+
             builder.Services.AddScoped<IDataConnection>((s) =>
             {
-                return new DataConnection();
+                return new DataConnection(config);
             });
+
             builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
             builder.Services.AddScoped<IPowerConsumptionRepository, PowerConsumptionRepository>();
             builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
