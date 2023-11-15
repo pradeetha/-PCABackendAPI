@@ -23,14 +23,12 @@ namespace PCABackendAPI
         private readonly ILogger<UserLoginFunction> _logger;
         private readonly JWTTokenManager jwtTokenManager;
         private readonly IUserProfileService _userProfileService;
-        private readonly IConfiguration _configuration;
 
-        public UserLoginFunction(ILogger<UserLoginFunction> log, IUserProfileService userProfileService, IConfiguration configuration)
+        public UserLoginFunction(ILogger<UserLoginFunction> log, IUserProfileService userProfileService)
         {
             _logger = log;
             _userProfileService = userProfileService;
-            _configuration = configuration;
-            jwtTokenManager = new JWTTokenManager(_configuration);
+            jwtTokenManager = new JWTTokenManager();
         }
 
         [FunctionName("UserLogin")]

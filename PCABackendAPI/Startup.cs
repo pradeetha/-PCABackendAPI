@@ -19,15 +19,9 @@ namespace PCABackendAPI
         {
             //builder.Services.AddHttpClient();
 
-            var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables()
-                .Build();
-
             builder.Services.AddScoped<IDataConnection>((s) =>
             {
-                return new DataConnection(config);
+                return new DataConnection();
             });
 
             builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();

@@ -27,17 +27,15 @@ namespace PCABackendAPI
         private IDeviceService _deviceService;
         BasicAuthManager _basicAuthManager;
         JWTTokenManager _jwtTokenManager;
-        private readonly IConfiguration _configuration;
 
 
-        public PowerConsumptionFunction(ILogger<PowerConsumptionFunction> log, IPowerConsumptionService consumptionService,IDeviceService deviceService, IConfiguration configuration)
+        public PowerConsumptionFunction(ILogger<PowerConsumptionFunction> log, IPowerConsumptionService consumptionService,IDeviceService deviceService)
         {
             _logger = log;
             _deviceService = deviceService;
             _consumptionService = consumptionService;
-            _configuration = configuration;
-            _basicAuthManager = new BasicAuthManager(_configuration);
-            _jwtTokenManager = new JWTTokenManager(_configuration);
+            _basicAuthManager = new BasicAuthManager();
+            _jwtTokenManager = new JWTTokenManager();
         }
 
         #region InsertConsumption

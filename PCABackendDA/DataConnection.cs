@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Configuration;
+using System;
 
 namespace PCABackendDA
 {
@@ -11,19 +13,13 @@ namespace PCABackendDA
         public string DeviceCollectionName;
         public IMongoDatabase _mongoDatabaseRunTime;
         MongoClient _mongoClient;
-        private IConfiguration _configuration;
-
-        public DataConnection(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
 
         public IMongoDatabase MongoDatabase()
         {
-            _connectionString = _configuration["Values:MongoDBURL"];
+            _connectionString = Environment.GetEnvironmentVariable("MongoDBURL");
             MongoClientSettings settings = MongoClientSettings.FromConnectionString(_connectionString);
             _mongoClient = new MongoClient(settings);
-            _databaseName = _configuration["Values:MongoDBDatabase"];
+            _databaseName = Environment.GetEnvironmentVariable("MongoDBDatabase");
             //Set the Database
             _mongoDatabaseRunTime = _mongoClient.GetDatabase(_databaseName);
             return _mongoDatabaseRunTime;

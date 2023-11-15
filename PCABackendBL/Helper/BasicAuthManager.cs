@@ -8,14 +8,11 @@ namespace PCABackendBL.Helper
     {
         private readonly string _configUsername;
         private readonly string _configPassword;
-        private readonly IConfiguration _configuration;
 
-
-        public BasicAuthManager(IConfiguration configuration)
+        public BasicAuthManager()
         {
-            _configuration = configuration;
-            _configUsername = _configuration["Values:APIBasicAuthUsername"];
-            _configPassword = _configuration["Values:APIBasicAuthPassword"];
+            _configUsername = Environment.GetEnvironmentVariable("APIBasicAuthUsername");
+            _configPassword = Environment.GetEnvironmentVariable("APIBasicAuthPassword");
 
         }
 

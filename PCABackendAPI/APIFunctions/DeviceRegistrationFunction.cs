@@ -9,12 +9,10 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using PCABackendBL.APIEntity;
-using PCABackendBL.BLServices;
 using PCABackendBL.BLServices.Interfaces;
 using PCABackendBL.Helper;
 using PCABackendDA.DataModels;
@@ -27,14 +25,12 @@ namespace PCABackendAPI
         private readonly ILogger<DeviceRegistrationFunction> _logger;
         private IDeviceService _deviceService;
         JWTTokenManager _jwtTokenManager;
-        private readonly IConfiguration _configuration;
 
-        public DeviceRegistrationFunction(ILogger<DeviceRegistrationFunction> log, IDeviceService deviceService, IConfiguration configuration)
+        public DeviceRegistrationFunction(ILogger<DeviceRegistrationFunction> log, IDeviceService deviceService)
         {
             _logger = log;
             _deviceService = deviceService;
-            _configuration = configuration;
-            _jwtTokenManager = new JWTTokenManager(_configuration);
+            _jwtTokenManager = new JWTTokenManager();
 
         }
 
