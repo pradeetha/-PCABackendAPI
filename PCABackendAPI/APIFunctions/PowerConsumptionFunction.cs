@@ -44,7 +44,7 @@ namespace PCABackendAPI
         [OpenApiSecurity("basic_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Basic)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ConsumptionServiceModel), Description = "Parameters", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> InsertConsumption([HttpTrigger(AuthorizationLevel.Function, "put", Route = "v1/PowerConsumption/")] HttpRequest req)
+        public async Task<IActionResult> InsertConsumption([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "v1/PowerConsumption/")] HttpRequest req)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace PCABackendAPI
         [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiParameter(name: "DeviceSerialKey", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The **DeviceSerialKey** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> GetConsumptionBySerialKey([HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/PowerConsumption/{DeviceSerialKey}")] HttpRequest req, string DeviceSerialKey)
+        public async Task<IActionResult> GetConsumptionBySerialKey([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/PowerConsumption/{DeviceSerialKey}")] HttpRequest req, string DeviceSerialKey)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace PCABackendAPI
         [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiParameter(name: "DeviceId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The **DeviceId** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> GetConsumptionByDeviceId([HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/PowerConsumptionByDeviceId/{DeviceId}")] HttpRequest req, int DeviceId)
+        public async Task<IActionResult> GetConsumptionByDeviceId([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/PowerConsumptionByDeviceId/{DeviceId}")] HttpRequest req, int DeviceId)
         {
             try
             {
@@ -153,7 +153,7 @@ namespace PCABackendAPI
         [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiParameter(name: "UserProfileId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The **UserProfileId** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> GetConsumptionByUserProfileId([HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/PowerConsumptionByUserProfileId/{UserProfileId}")] HttpRequest req, int UserProfileId)
+        public async Task<IActionResult> GetConsumptionByUserProfileId([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/PowerConsumptionByUserProfileId/{UserProfileId}")] HttpRequest req, int UserProfileId)
         {
             try
             {
