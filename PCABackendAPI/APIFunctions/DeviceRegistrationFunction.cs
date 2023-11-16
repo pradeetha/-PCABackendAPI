@@ -168,6 +168,13 @@ namespace PCABackendAPI
                 else
                 {
                     List<DeviceInfoServiceModel> devices = _deviceService.GetDeviceByUserProfileId(int.Parse(UserProfileId));
+
+                    if (devices.Count == 0)
+                    {
+                        msg = "No devices found.";
+                        return new NotFoundObjectResult(new { msg = msg });
+                    }
+
                     msg = "Device found.";
                     return new OkObjectResult(new { msg = msg, deviceData = devices });
                 }

@@ -96,7 +96,7 @@ namespace PCABackendDA.DataRepository
                     userCollection.UpdateOne(filterObj, updateObj);
                     scope1.Complete();
                     userCollection = _mongoDatabase.GetCollection<UserProfile>("UserProfile");
-                    UserProfile userProfile = userCollection.AsQueryable().First(a => a.UserProfileId == userprofileObj.UserProfileId);
+                    UserProfile userProfile = userCollection.AsQueryable().FirstOrDefault(a => a.UserProfileId == userprofileObj.UserProfileId);
                     return userProfile;
                 }
                 catch (Exception ex) { scope1.Dispose(); throw ex; }
@@ -114,7 +114,7 @@ namespace PCABackendDA.DataRepository
             {
                 //if (!IsUserAvailable(userProfileId)) { return null; }
                 IMongoCollection<UserProfile> userCollection = _mongoDatabase.GetCollection<UserProfile>("UserProfile");
-                UserProfile userProfile = userCollection.AsQueryable().First(a => a.UserProfileId == userProfileId);
+                UserProfile userProfile = userCollection.AsQueryable().FirstOrDefault(a => a.UserProfileId == userProfileId);
                 return userProfile;
             }
             catch (Exception ex) { throw ex; }
@@ -131,7 +131,7 @@ namespace PCABackendDA.DataRepository
             {
 
                 IMongoCollection<UserProfile> userCollection = _mongoDatabase.GetCollection<UserProfile>("UserProfile");
-                UserProfile userProfile = userCollection.AsQueryable().First(a => a.Username == userName);
+                UserProfile userProfile = userCollection.AsQueryable().FirstOrDefault(a => a.Username == userName);
                 return userProfile;
             }
             catch (Exception ex) { throw ex; }
@@ -146,11 +146,14 @@ namespace PCABackendDA.DataRepository
 
                 if (userCollection.AsQueryable().Any(d => d.Username.ToLower().Equals(username.ToLower()) && d.Password.Equals(password)))
                 {
-                    userProfile = userCollection.AsQueryable().First(d => d.Username.ToLower().Equals(username.ToLower()) && d.Password.Equals(password));
+                    userProfile = userCollection.AsQueryable().FirstOrDefault(d => d.Username.ToLower().Equals(username.ToLower()) && d.Password.Equals(password));
                     userProfile.Password = "";
                     return userProfile;
                 }
-                return null;
+                else
+                {
+                    throw new InvalidOperationException("User not found.");
+                }
             }
             catch (Exception ex) { throw ex; }
         }

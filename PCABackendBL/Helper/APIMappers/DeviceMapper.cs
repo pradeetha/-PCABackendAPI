@@ -50,6 +50,7 @@ namespace PCABackendBL.Helper
                 Address = deviceInfo.Address,
                 DeviceId= deviceInfo.DeviceId,
                 UserName=userProfile.Username,
+                UserCode = userProfile.UserCode,   
                 CreatedDate=deviceInfo.CreatedDate,
                 lastModified=deviceInfo.lastModified
             };
