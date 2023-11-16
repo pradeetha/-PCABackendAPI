@@ -40,7 +40,7 @@ namespace PCABackendAPI
         [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(DeviceInfoServiceModel), Description = "Parameters", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> DeviceRegistration([HttpTrigger(AuthorizationLevel.Function, "put", Route = "v1/DeviceInfo/")] HttpRequest req)
+        public async Task<IActionResult> DeviceRegistration([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "v1/DeviceInfo/")] HttpRequest req)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace PCABackendAPI
         [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiParameter(name: "DeviceSerialKey", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The **DeviceSerialKey** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> GetDeviceBySerialKey([HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/DeviceBySerialKey/{DeviceSerialKey}")] HttpRequest req, string DeviceSerialKey)
+        public async Task<IActionResult> GetDeviceBySerialKey([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/DeviceBySerialKey/{DeviceSerialKey}")] HttpRequest req, string DeviceSerialKey)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace PCABackendAPI
         [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiParameter(name: "DeviceId", In = ParameterLocation.Path, Required = true, Type = typeof(Int32), Description = "The **DeviceId** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> GetDeviceById([HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/DeviceById/{DeviceId}")] HttpRequest req, string DeviceId)
+        public async Task<IActionResult> GetDeviceById([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/DeviceById/{DeviceId}")] HttpRequest req, string DeviceId)
         {
             try
             {
@@ -154,7 +154,7 @@ namespace PCABackendAPI
         [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiParameter(name: "UserProfileId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The **UserProfileId** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> GetDeviceByUserProfileId([HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/DeviceByUserProfileId/{UserProfileId}")] HttpRequest req, string UserProfileId)
+        public async Task<IActionResult> GetDeviceByUserProfileId([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/DeviceByUserProfileId/{UserProfileId}")] HttpRequest req, string UserProfileId)
         {
             try
             {
