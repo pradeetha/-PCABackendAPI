@@ -10,6 +10,6 @@ namespace PCABackendBL.APIEntity
     {
         public string DeviceSerialKey { get; set; }
         public float ConsumedUnits { get; set; }
-        public DateTime LogTimestamp { get; set; }//Date in "yyyy-MM-dd'T'HH:mm:ss'Z" format (Ex:-"2013-09-29T18:46:19Z")
+        public string LogTimestamp { get; set; }//Date in "yyyy-MM-dd'T'HH:mm:ss'Z" format (Ex:-"2013-09-29T18:46:19Z")
     }
 }

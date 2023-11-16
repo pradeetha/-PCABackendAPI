@@ -15,9 +15,10 @@ namespace PCABackendBL.APIEntity
         public string InternalLocation { get; set; }
         public string Address { get; set; }
         public string UserName { get; set; }
+        public string UserCode { get; set; }
         public float PowerThresholdValue { get; set; }
         public string CreatedDate { get; set; } = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss");
-        public DateTime lastModified { get; set; }
+        public DateTime lastModified { get; set; }     
 
     }
 }
