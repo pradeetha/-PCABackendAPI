@@ -175,8 +175,10 @@
     <Compile Include="APIEntity\ConsumptionExceededThresholdServiceModel.cs" />
     <Compile Include="APIEntity\ConsumptionIndividualDetailsServiceModel.cs" />
     <Compile Include="APIEntity\DateRangeConsumptionServiceModel.cs" />
+    <Compile Include="APIEntity\DeviceInfoServiceInsertModel.cs" />
     <Compile Include="APIEntity\DeviceInfoServiceModel.cs" />
     <Compile Include="APIEntity\ConsumptionServiceModel.cs" />
+    <Compile Include="APIEntity\UserProfileServiceInsertModel.cs" />
     <Compile Include="APIEntity\UserProfileServiceModel.cs" />
     <Compile Include="BLServices\DeviceService.cs" />
     <Compile Include="BLServices\Interfaces\IDeviceService.cs" />

@@ -13,6 +13,7 @@ namespace PCABackendDA.DataModels
         public int DeviceId { get; set; }
         public int UserProfileId { get; set; }
         public string UserCode { get; set; }
+        public string UserName { get; set; }
         public string DeviceSerialKey { get; set; }
         public string DeviceType { get; set; }
         public string ApplianceName { get; set; }

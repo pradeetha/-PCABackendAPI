@@ -38,7 +38,7 @@ namespace PCABackendAPI
         [FunctionName("DeviceRegistration")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "DeviceManagement" })]
         [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(DeviceInfoServiceModel), Description = "Parameters", Required = true)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(DeviceInfoServiceInsertModel), Description = "Parameters", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> DeviceRegistration([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "v1/DeviceInfo/")] HttpRequest req)
         {
@@ -51,7 +51,7 @@ namespace PCABackendAPI
                 if (!_jwtTokenManager.ValidateJWTToken(req)) { return new UnauthorizedResult(); }
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 dynamic data = JsonConvert.DeserializeObject(requestBody);
-                DeviceInfoServiceModel deviceInfo = JsonConvert.DeserializeObject<DeviceInfoServiceModel>(requestBody);
+                DeviceInfoServiceInsertModel deviceInfo = JsonConvert.DeserializeObject<DeviceInfoServiceInsertModel>(requestBody);
 
                 string msg = "";
                 DeviceInfo savedobj = new DeviceInfo();
@@ -135,7 +135,12 @@ namespace PCABackendAPI
                 else
                 {
                     DeviceInfo device = _deviceService.GetDeviceById(deviceId);
-                    msg = "Device found.";
+                    if (device != null) { msg = "Device found."; }
+                    else
+                    {
+                        msg = "No devices found.";
+                        return new NotFoundObjectResult(new { msg = msg });
+                    }
                     return new OkObjectResult(new { msg = msg, deviceData = device });
                 }
 
@@ -168,6 +173,13 @@ namespace PCABackendAPI
                 else
                 {
                     List<DeviceInfoServiceModel> devices = _deviceService.GetDeviceByUserProfileId(int.Parse(UserProfileId));
+
+                    if (devices?.Count == 0)
+                    {
+                        msg = "No devices found.";
+                        return new NotFoundObjectResult(new { msg = msg });
+                    }
+
                     msg = "Device found.";
                     return new OkObjectResult(new { msg = msg, deviceData = devices });
                 }

@@ -40,7 +40,7 @@ namespace PCABackendAPI
         [FunctionName("CreateOrUpdateUserProfile")]
         [OpenApiOperation(operationId: "CreateOrUpdateUserProfile", tags: new[] { "UserProfileManagement" })]
         [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UserProfileServiceModel), Description = "Parameters", Required = true)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UserProfileServiceInsertModel), Description = "Parameters", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> CreateOrUpdateUserProfile([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "v1/UserProfile/")] HttpRequest req)
         {
@@ -48,7 +48,7 @@ namespace PCABackendAPI
             {
                 _logger.LogInformation("C# HTTP trigger function 'CreateOrUpdateUserProfile' processed a request.");
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                UserProfileServiceModel userProfileData = JsonConvert.DeserializeObject<UserProfileServiceModel>(requestBody);
+                UserProfileServiceInsertModel userProfileData = JsonConvert.DeserializeObject<UserProfileServiceInsertModel>(requestBody);
                 string msg = "";
                 UserProfileServiceModel savedObj = new UserProfileServiceModel();
 
