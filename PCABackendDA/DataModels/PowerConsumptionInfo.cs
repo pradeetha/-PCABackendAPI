@@ -17,7 +17,7 @@ namespace PCABackendDA.DataModels
         public string ApplianceName { get; set; }
         public string InternalLocation { get; set; }
         public float ConsumedUnits { get; set; }
-        public string LogTimestamp { get; set; }//Date in "yyyy-MM-dd'T'HH:mm:ss'Z" format (Ex:-"2013-09-29T18:46:19Z")
+        public string LogTimestamp { get; set; }//Date in "yyyy-MM-ddThh:mm:ss.fffffffZ" format (Ex:-"2023-11-17T06:34:47.8721234Z")
         public DateTime lastModified { get; set; }
     }
 }

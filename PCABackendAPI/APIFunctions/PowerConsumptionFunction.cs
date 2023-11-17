@@ -51,7 +51,7 @@ namespace PCABackendAPI
             {
                 _logger.LogInformation("C# HTTP trigger InsertConsumption function processed a request.");
 
-                //if (!_basicAuthManager.ValidateToken(req)) { return new UnauthorizedResult(); }
+                if (!_basicAuthManager.ValidateToken(req.Headers.Authorization)) { return new UnauthorizedResult(); }
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 dynamic data = JsonConvert.DeserializeObject(requestBody);
@@ -102,7 +102,14 @@ namespace PCABackendAPI
                 else
                 {
                     List<ConsumptionServiceModel> consumption = _consumptionService.GetConsumptionBySerialKey(DeviceSerialKey);
-                    msg = "Consumption data found.";
+                    if (consumption.Count == 0)
+                    {
+                        msg = "Consumption data not found.";
+                    }
+                    else
+                    {
+                        msg = "Consumption data found.";
+                    }
                     return new OkObjectResult(new { msg = msg, consumptionData = consumption });
                 }
 
@@ -173,12 +180,61 @@ namespace PCABackendAPI
                 else
                 {
                     List<ConsumptionServiceModel> consumption = _consumptionService.GetConsumptionByUserProfileId(UserProfileId);
-                    if (consumption?.Count > 0) { msg = "Consumption data found."; }
+
+                    if (consumption.Count == 0)
+                    {
+                        msg = "Not found Consumption Data";
+                    }
                     else
                     {
-                        msg = "Consumption data not found.";
-                        return new NotFoundObjectResult(new { msg = msg });
+                        msg = "Consumption data found.";
                     }
+                    
+                    return new OkObjectResult(new { msg = msg, consumptionData = consumption });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Argument error: {ex.Message}");
+                return new BadRequestObjectResult(ex.Message);
+            }
+        }
+        #endregion
+
+        #region GetThresholdExceededDevices
+        [FunctionName("GetThresholdExceededDevices")]
+        [OpenApiOperation(operationId: "GetThresholdExceededDevices", tags: new[] { "PowerConsumptionManagement" })]
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(DateRangeConsumptionServiceModel), Description = "Parameters", Required = true)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(string), Description = "The OK response")]
+        public async Task<IActionResult> GetThresholdExceededDevices([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v1/PowerConsumptionExceededDevices/")] HttpRequest req)
+        {
+            try
+            {
+                _logger.LogInformation("C# HTTP trigger GetThresholdExceededDevices function processed a request.");
+
+                if (!_jwtTokenManager.ValidateJWTToken(req)) { return new UnauthorizedResult(); }
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                DateRangeConsumptionServiceModel userDeviceDateInterval  = JsonConvert.DeserializeObject<DateRangeConsumptionServiceModel>(requestBody);
+                string msg = "";
+
+                if (userDeviceDateInterval.UserProfileId == 0) { return new BadRequestObjectResult("UserProfileId is required"); }
+                if (userDeviceDateInterval.DeviceId == 0) { return new BadRequestObjectResult("DeviceId is required"); }
+
+                else
+                {
+                    var consumption = _consumptionService.GetExceededConsumptionForDateRange(userDeviceDateInterval.UserProfileId, userDeviceDateInterval.DeviceId, userDeviceDateInterval.FromDate, userDeviceDateInterval.ToDate);
+
+                    if (consumption.Count == 0)
+                    {
+                        msg = "Not found Power Consumption Exceeded Devices";
+                    }
+                    else
+                    {
+                        msg = "Discovered devices exceeding power consumption limits.";
+                    }
+
                     return new OkObjectResult(new { msg = msg, consumptionData = consumption });
                 }
 
