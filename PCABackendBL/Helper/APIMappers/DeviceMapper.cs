@@ -18,19 +18,20 @@ namespace PCABackendBL.Helper
 
             var deviceInfo = new DeviceInfo()
             {
-              
+
                 DeviceSerialKey = device.DeviceSerialKey,
                 DeviceId = deviceId,
                 ApplianceName = device.ApplianceName,
                 DeviceType = device.DeviceType,
                 InternalLocation = device.InternalLocation,
                 Address = device.Address,
-                UserProfileId = userProfile.UserProfileId,
+                UserProfileId = device.UserProfileId,
                 UserCode = userProfile.UserCode,
+                UserName = userProfile.Username,
                 PowerThresholdValue = device.PowerThresholdValue,
                 CreatedDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"),
                 lastModified = DateTime.UtcNow
-                
+
             };
 
             return deviceInfo;
@@ -46,13 +47,13 @@ namespace PCABackendBL.Helper
                 ApplianceName = deviceInfo.ApplianceName,
                 DeviceType = deviceInfo.DeviceType,
                 InternalLocation = deviceInfo.InternalLocation,
-                PowerThresholdValue= deviceInfo.PowerThresholdValue,
+                PowerThresholdValue = deviceInfo.PowerThresholdValue,
                 Address = deviceInfo.Address,
-                DeviceId= deviceInfo.DeviceId,
-                UserName=userProfile.Username,
-                UserCode = userProfile.UserCode,   
-                CreatedDate=deviceInfo.CreatedDate,
-                lastModified=deviceInfo.lastModified
+                DeviceId = deviceInfo.DeviceId,
+                UserName = userProfile.Username,
+                UserCode = userProfile.UserCode,
+                CreatedDate = deviceInfo.CreatedDate,
+                lastModified = deviceInfo.lastModified
             };
             return device;
         }
