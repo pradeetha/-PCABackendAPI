@@ -11,8 +11,8 @@ namespace PCABackendBL.BLServices.Interfaces
     public interface IUserProfileService
     {
         bool IsUserAvailable(string userName);
-        UserProfileServiceModel SaveNewUser(UserProfileServiceModel userprofile);
-        UserProfileServiceModel UpdateUserProfile(UserProfileServiceModel userprofileObj);
+        UserProfileServiceModel SaveNewUser(UserProfileServiceInsertModel userprofile);
+        UserProfileServiceModel UpdateUserProfile(UserProfileServiceInsertModel userprofileObj);
         UserProfileServiceModel GetUserProfileData(int userProfileId);
         UserProfile GetUserForLogin(string username, string password);
     }

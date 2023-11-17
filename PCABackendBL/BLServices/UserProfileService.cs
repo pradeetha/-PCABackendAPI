@@ -19,7 +19,7 @@ namespace PCABackendBL.BLServices
             _userProfileRepository = userProfileRepository;
         }
 
-        public UserProfileServiceModel UpdateUserProfile(UserProfileServiceModel userprofile)
+        public UserProfileServiceModel UpdateUserProfile(UserProfileServiceInsertModel userprofile)
         {
             var userprofileInfo = _userProfileRepository.GetUserProfileDataByUserName(userprofile.Username);
             var updatedUserprofileInfo= _userProfileRepository.UpdateUserProfile(userprofile.ApiToDAL(userprofileInfo.UserProfileId));
@@ -32,7 +32,7 @@ namespace PCABackendBL.BLServices
             return userProfileInfor.DALToApi();
         }
 
-        public UserProfileServiceModel SaveNewUser(UserProfileServiceModel userprofile)
+        public UserProfileServiceModel SaveNewUser(UserProfileServiceInsertModel userprofile)
         {
             var savedUserprofileInfo = _userProfileRepository.SaveNewUser(userprofile.ApiToDAL());
             return savedUserprofileInfo.DALToApi() ;

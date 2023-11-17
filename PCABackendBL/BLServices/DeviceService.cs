@@ -30,12 +30,12 @@ namespace PCABackendBL.BLServices
         /// </summary>
         /// <param name="device"></param>
         /// <returns></returns>
-        public DeviceInfo RegisterDevice(DeviceInfoServiceModel device)
+        public DeviceInfo RegisterDevice(DeviceInfoServiceInsertModel device)
         {
             try
             {
                 UserProfile userProfile = new UserProfile();
-                userProfile = _userProfileRepository.GetUserProfileDataByUserName(device.UserName);
+                userProfile = _userProfileRepository.GetUserProfileData(device.UserProfileId);
                 return _deviceRepository.InsertDevice(device.ApiToDAL(userProfile));
             }
             catch (Exception ex)
@@ -49,10 +49,10 @@ namespace PCABackendBL.BLServices
         /// </summary>
         /// <param name="device"></param>
         /// <returns></returns>
-        public DeviceInfo UpdateDevice(DeviceInfoServiceModel device)
+        public DeviceInfo UpdateDevice(DeviceInfoServiceInsertModel device)
         {
             var deviceInfor = _deviceRepository.GetDeviceBySerialKey(device.DeviceSerialKey);
-            var userProfile = _userProfileRepository.GetUserProfileDataByUserName(device.UserName);
+            var userProfile = _userProfileRepository.GetUserProfileData(device.UserProfileId);
             return _deviceRepository.UpdateDevice(device.ApiToDAL(userProfile, deviceInfor.DeviceId));
 
         }

@@ -141,13 +141,11 @@ namespace PCABackendAPI
                 else
                 {
                     List<ConsumptionServiceModel> consumption = _consumptionService.GetConsumptionByDeviceId(DeviceId);
-                    if (consumption.Count == 0)
+                    if (consumption?.Count > 0) { msg = "Consumption data found."; }
+                    else 
                     {
                         msg = "Consumption data not found.";
-                    }
-                    else
-                    {
-                        msg = "Consumption data found.";
+                        return new NotFoundObjectResult(new { msg = msg }); 
                     }
                     return new OkObjectResult(new { msg = msg, consumptionData = consumption });
                 }

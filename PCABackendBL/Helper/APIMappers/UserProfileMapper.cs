@@ -12,7 +12,7 @@ namespace PCABackendBL.Helper
 {
     public static class UserProfileMapper
     {
-        public static UserProfile ApiToDAL(this UserProfileServiceModel userProfile, int userProfileId = 0)
+        public static UserProfile ApiToDAL(this UserProfileServiceInsertModel userProfile, int userProfileId = 0)
         {
 
             MD5EncryptionManager mD5EncryptionManager = new MD5EncryptionManager();
@@ -28,9 +28,9 @@ namespace PCABackendBL.Helper
                 lastModified = DateTime.UtcNow,
                 Password = mD5EncryptionManager.GetMD5Hash(userProfile.Password),
                 UserProfileId = userProfileId,
-                CreatedDate = userProfile.CreatedDate
-                
-            };
+                CreatedDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss")
+
+        };
 
             return userProfileInfo;
         }
