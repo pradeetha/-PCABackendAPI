@@ -11,7 +11,7 @@ namespace PCABackendBL.Helper
 {
     public static class DeviceMapper
     {
-        public static DeviceInfo ApiToDAL(this DeviceInfoServiceModel device, UserProfile userProfile, int deviceId = 0)
+        public static DeviceInfo ApiToDAL(this DeviceInfoServiceInsertModel device, UserProfile userProfile, int deviceId = 0)
         {
 
             if (device == null) return null;
@@ -28,7 +28,7 @@ namespace PCABackendBL.Helper
                 UserProfileId = userProfile.UserProfileId,
                 UserCode = userProfile.UserCode,
                 PowerThresholdValue = device.PowerThresholdValue,
-                CreatedDate = device.CreatedDate,
+                CreatedDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"),
                 lastModified = DateTime.UtcNow
                 
             };

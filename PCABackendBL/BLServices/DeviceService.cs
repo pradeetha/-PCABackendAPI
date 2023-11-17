@@ -30,7 +30,7 @@ namespace PCABackendBL.BLServices
         /// </summary>
         /// <param name="device"></param>
         /// <returns></returns>
-        public DeviceInfo RegisterDevice(DeviceInfoServiceModel device)
+        public DeviceInfo RegisterDevice(DeviceInfoServiceInsertModel device)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace PCABackendBL.BLServices
         /// </summary>
         /// <param name="device"></param>
         /// <returns></returns>
-        public DeviceInfo UpdateDevice(DeviceInfoServiceModel device)
+        public DeviceInfo UpdateDevice(DeviceInfoServiceInsertModel device)
         {
             var deviceInfor = _deviceRepository.GetDeviceBySerialKey(device.DeviceSerialKey);
             var userProfile = _userProfileRepository.GetUserProfileDataByUserName(device.UserName);
