@@ -18,7 +18,7 @@ namespace PCABackendDA.DataModels
         public string Email { get; set; }
         public string ContactNumber { get; set; }
         public string Address { get; set; }
-        public string CreatedDate { get; set; } = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss");
+        public string CreatedDate { get; set; } = DateTime.UtcNow.ToString("yyyy-MM-ddThh:mm:ss.fffffffZ");
         public DateTime lastModified { get; set; }
     }
 }

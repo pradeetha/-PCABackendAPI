@@ -24,6 +24,7 @@ namespace PCABackendBL.Helper
                 UserProfileId = deviceInfo.UserProfileId,
                 UserCode = deviceInfo.UserCode,
                 ApplianceName = deviceInfo.ApplianceName,
+                InternalLocation = deviceInfo.InternalLocation,
                 lastModified = DateTime.UtcNow
             };
 

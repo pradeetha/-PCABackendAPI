@@ -6,6 +6,7 @@ using PCABackendDA.DataRepository;
 using PCABackendDA.DataRepository.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,6 +55,30 @@ namespace PCABackendBL.BLServices
             var consumptionInfo = _consumptionInforRepository.GetConsumptionByUserProfileId(userProfileId);
             foreach (var consumption in consumptionInfo) { consumptions.Add(consumption.DALToApi()); }
             return consumptions;
+        }
+
+        public List<ConsumptionExceededThresholdServiceModel> GetExceededConsumptionForDateRange(int userProfileId, int deviceId, string fromDate, string toDate)
+        {
+            List<ConsumptionExceededThresholdServiceModel> thresholdExceededList = new List<ConsumptionExceededThresholdServiceModel>();
+            List<PowerConsumptionInfo> consumptionForUserAndDevice = _consumptionInforRepository.GetConsumptionForUserandDevice(userProfileId, deviceId);
+            List<DeviceInfo> deviceInfo = _deviceRepository.GetDeviceByUserProfileId(userProfileId);
+
+            thresholdExceededList = consumptionForUserAndDevice.Where(a => (DateTime.Parse(a.LogTimestamp) >= DateTime.Parse(fromDate) && DateTime.Parse(a.LogTimestamp) <= DateTime.Parse(toDate)
+                                    )).GroupBy(b=>b.DeviceId).Select(c=>new ConsumptionExceededThresholdServiceModel
+            {
+                DeviceId = c.Key,
+                DeviceSerialKey = c.First().DeviceSerialKey,
+                UserProfileId = c.First().UserProfileId,
+                UserCode = c.First().UserCode,
+                ApplianceName = c.First().ApplianceName,
+                InternalLocation = c.First().InternalLocation,
+                TotalPowerConsumption = c.Sum(d => d.ConsumedUnits),
+                ThresholdValue = deviceInfo.FirstOrDefault(e => e.DeviceId == c.Key).PowerThresholdValue,
+                FromDate = fromDate,
+                ToDate = toDate,
+            }).Where(f=>f.TotalPowerConsumption>f.ThresholdValue).ToList();
+
+            return thresholdExceededList;
         }
     }
 }
