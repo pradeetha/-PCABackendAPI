@@ -14,5 +14,7 @@ namespace PCABackendBL.BLServices.Interfaces
         List<ConsumptionServiceModel> GetConsumptionBySerialKey(string serialKey);
         List<ConsumptionServiceModel> GetConsumptionByDeviceId(int deviceId);
         List<ConsumptionServiceModel> GetConsumptionByUserProfileId(int userProfileId);
+        List<ConsumptionExceededThresholdServiceModel> GetConsumptionTotalByDateRange(int userProfileId, int deviceId, string fromDate, string toDate);
+        List<ConsumptionIndividualDetailsServiceModel> GetConsumptionInidividualValuesByDateRange(int userProfileId, int deviceId, string fromDate, string toDate);
     }
 }

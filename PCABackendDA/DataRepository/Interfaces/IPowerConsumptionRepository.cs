@@ -13,5 +13,6 @@ namespace PCABackendDA.DataRepository.Interfaces
         List<PowerConsumptionInfo> GetConsumptionBySerialKey(string serialKey);
         List<PowerConsumptionInfo> GetConsumptionByDeviceId(int deviceId);
         List<PowerConsumptionInfo> GetConsumptionByUserProfileId(int userProfileId);
+        List<PowerConsumptionInfo> GetConsumptionForUserandDevice(int userProfileId, int deviceId);
     }
 }

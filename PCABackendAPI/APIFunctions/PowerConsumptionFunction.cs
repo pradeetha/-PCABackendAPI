@@ -12,6 +12,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
 using PCABackendBL.APIEntity;
 using PCABackendBL.BLServices.Interfaces;
@@ -171,6 +172,80 @@ namespace PCABackendAPI
                     return new OkObjectResult(new { msg = msg, consumptionData = consumption });
                 }
 
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Argument error: {ex.Message}");
+                return new BadRequestObjectResult(ex.Message);
+            }
+        }
+        #endregion
+
+        #region GetConsumptionTotalByDateRange
+        [FunctionName("GetConsumptionTotalByDateRange")]
+        [OpenApiOperation(operationId: "GetConsumptionTotalByDateRange", tags: new[] { "PowerConsumptionManagement" })]
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(DateRangeConsumptionServiceModel), Description = "Parameters", Required = true)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(string), Description = "The OK response")]
+        public async Task<IActionResult> GetConsumptionTotalByDateRange([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v1/GetConsumptionTotalByDateRange/")] HttpRequest req)
+        {
+            try
+            {
+                _logger.LogInformation("C# HTTP trigger GetConsumptionTotalByDateRange function processed a request.");
+
+                if (!_jwtTokenManager.ValidateJWTToken(req)) { return new UnauthorizedResult(); }
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                DateRangeConsumptionServiceModel dateRangeConsumptionServiceModel = JsonConvert.DeserializeObject<DateRangeConsumptionServiceModel>(requestBody);
+                string msg = "";
+                if (dateRangeConsumptionServiceModel.DeviceId == 0) 
+                {
+                    dateRangeConsumptionServiceModel.DeviceId = -99;
+                }
+
+                List<ConsumptionExceededThresholdServiceModel> consumption = _consumptionService.GetConsumptionTotalByDateRange(dateRangeConsumptionServiceModel.UserProfileId, dateRangeConsumptionServiceModel.DeviceId, dateRangeConsumptionServiceModel.FromDate, dateRangeConsumptionServiceModel.ToDate);
+                if (consumption.Count == 0)
+                {
+                    msg = "Consumption data not found.";
+                }
+                else { msg = "Consumption data found."; }
+                return new OkObjectResult(new { msg = msg, consumptionData = consumption });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Argument error: {ex.Message}");
+                return new BadRequestObjectResult(ex.Message);
+            }
+        }
+        #endregion
+
+        #region GetConsumptionInidividualValuesByDateRange
+        [FunctionName("GetConsumptionInidividualValuesByDateRange")]
+        [OpenApiOperation(operationId: "GetConsumptionInidividualValuesByDateRange", tags: new[] { "PowerConsumptionManagement" })]
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(DateRangeConsumptionServiceModel), Description = "Parameters", Required = true)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(string), Description = "The OK response")]
+        public async Task<IActionResult> GetConsumptionInidividualValuesByDateRange([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v1/GetConsumptionInidividualValuesByDateRange/")] HttpRequest req)
+        {
+            try
+            {
+                _logger.LogInformation("C# HTTP trigger GetConsumptionInidividualValuesByDateRange function processed a request.");
+
+                if (!_jwtTokenManager.ValidateJWTToken(req)) { return new UnauthorizedResult(); }
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                DateRangeConsumptionServiceModel dateRangeConsumptionServiceModel = JsonConvert.DeserializeObject<DateRangeConsumptionServiceModel>(requestBody);
+                string msg = "";
+                if (dateRangeConsumptionServiceModel.DeviceId == 0)
+                {
+                    dateRangeConsumptionServiceModel.DeviceId = -99;
+                }
+
+                List<ConsumptionIndividualDetailsServiceModel> consumption = _consumptionService.GetConsumptionInidividualValuesByDateRange(dateRangeConsumptionServiceModel.UserProfileId, dateRangeConsumptionServiceModel.DeviceId, dateRangeConsumptionServiceModel.FromDate, dateRangeConsumptionServiceModel.ToDate);
+                if (consumption.Count == 0)
+                {
+                    msg = "Consumption data not found.";
+                }
+                else { msg = "Consumption data found."; }
+                return new OkObjectResult(new { msg = msg, consumptionData = consumption });
             }
             catch (Exception ex)
             {

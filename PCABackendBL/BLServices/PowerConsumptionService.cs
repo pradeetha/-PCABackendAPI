@@ -6,6 +6,7 @@ using PCABackendDA.DataRepository;
 using PCABackendDA.DataRepository.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,5 +56,60 @@ namespace PCABackendBL.BLServices
             foreach (var consumption in consumptionInfo) { consumptions.Add(consumption.DALToApi()); }
             return consumptions;
         }
+
+        public List<ConsumptionExceededThresholdServiceModel> GetConsumptionTotalByDateRange(int userProfileId, int deviceId, string fromDate, string toDate)
+        {
+            List<ConsumptionExceededThresholdServiceModel> consumptionTotalList = new List<ConsumptionExceededThresholdServiceModel>();
+            List<PowerConsumptionInfo> consumptionForUserAndDevice = _consumptionInforRepository.GetConsumptionForUserandDevice(userProfileId, deviceId);
+            List<DeviceInfo> deviceInfo = _deviceRepository.GetDeviceByUserProfileId(userProfileId);
+
+
+            consumptionTotalList = consumptionForUserAndDevice.Where(
+                a => (DateTime.ParseExact(a.LogTimestamp, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind) >= DateTime.ParseExact(fromDate, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind) &&
+            DateTime.ParseExact(a.LogTimestamp, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind) <= DateTime.ParseExact(toDate, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
+            )).GroupBy(b => b.DeviceId).Select(c => new ConsumptionExceededThresholdServiceModel
+            {
+                DeviceId = c.Key,
+                DeviceSerialKey = c.First().DeviceSerialKey,
+                UserProfileId = c.First().UserProfileId,
+                UserCode = c.First().UserCode,
+                ApplianceName = c.First().ApplianceName,
+                InternalLocation = c.First().InternalLocation,
+                TotalPowerConsumption = c.Sum(d => d.ConsumedUnits),
+                ThresholdValue = deviceInfo.FirstOrDefault(e => e.DeviceId == c.Key).PowerThresholdValue,
+                FromDate = fromDate,
+                ToDate = toDate,
+            }).ToList();
+
+            return consumptionTotalList;
+        }
+
+
+        public List<ConsumptionIndividualDetailsServiceModel> GetConsumptionInidividualValuesByDateRange(int userProfileId, int deviceId, string fromDate, string toDate)
+        {
+            List<ConsumptionIndividualDetailsServiceModel> individualConsumptionList = new List<ConsumptionIndividualDetailsServiceModel>();
+            List<PowerConsumptionInfo> consumptionForUserAndDevice = _consumptionInforRepository.GetConsumptionForUserandDevice(userProfileId, deviceId);
+            List<DeviceInfo> deviceInfo = _deviceRepository.GetDeviceByUserProfileId(userProfileId);
+
+            individualConsumptionList = consumptionForUserAndDevice.Where(
+                a => (DateTime.ParseExact(a.LogTimestamp, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind) >= DateTime.ParseExact(fromDate, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind) &&
+            DateTime.ParseExact(a.LogTimestamp, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind) <= DateTime.ParseExact(toDate, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
+            )).Select(c => new ConsumptionIndividualDetailsServiceModel
+            {
+                DeviceId = c.DeviceId,
+                DeviceSerialKey = c.DeviceSerialKey,
+                UserProfileId = c.UserProfileId,
+                UserCode = c.UserCode,
+                ApplianceName = c.ApplianceName,
+                InternalLocation = c.InternalLocation,
+                ConsumedUnits = c.ConsumedUnits,
+                LogTimestamp = c.LogTimestamp,
+                FromDate = fromDate,
+                ToDate = toDate,
+            }).ToList();
+
+            return individualConsumptionList;
+        }
+
     }
 }
