@@ -29,7 +29,7 @@ namespace PCABackendBL.Helper
                 UserCode = userProfile.UserCode,
                 UserName = userProfile.Username,
                 PowerThresholdValue = device.PowerThresholdValue,
-                CreatedDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"),
+                CreatedDate = DateTime.UtcNow.ToString("yyyy-MM-ddThh:mm:ss.fffffffZ"),
                 lastModified = DateTime.UtcNow
 
             };
