@@ -65,9 +65,8 @@ namespace PCABackendBL.BLServices
 
 
             consumptionTotalList = consumptionForUserAndDevice.Where(
-                a => (DateTime.ParseExact(a.LogTimestamp, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind) >= DateTime.ParseExact(fromDate, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind) &&
-            DateTime.ParseExact(a.LogTimestamp, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind) <= DateTime.ParseExact(toDate, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
-            )).GroupBy(b => b.DeviceId).Select(c => new ConsumptionExceededThresholdServiceModel
+                a => (DateTime.Parse(a.LogTimestamp) >= DateTime.Parse(fromDate) && DateTime.Parse(a.LogTimestamp) <= DateTime.Parse(toDate)
+                                    )).GroupBy(b => b.DeviceId).Select(c => new ConsumptionExceededThresholdServiceModel
             {
                 DeviceId = c.Key,
                 DeviceSerialKey = c.First().DeviceSerialKey,
@@ -92,9 +91,8 @@ namespace PCABackendBL.BLServices
             List<DeviceInfo> deviceInfo = _deviceRepository.GetDeviceByUserProfileId(userProfileId);
 
             individualConsumptionList = consumptionForUserAndDevice.Where(
-                a => (DateTime.ParseExact(a.LogTimestamp, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind) >= DateTime.ParseExact(fromDate, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind) &&
-            DateTime.ParseExact(a.LogTimestamp, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind) <= DateTime.ParseExact(toDate, "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
-            )).Select(c => new ConsumptionIndividualDetailsServiceModel
+                a => (DateTime.Parse(a.LogTimestamp) >= DateTime.Parse(fromDate) && DateTime.Parse(a.LogTimestamp) <= DateTime.Parse(toDate)
+                                    )).Select(c => new ConsumptionIndividualDetailsServiceModel
             {
                 DeviceId = c.DeviceId,
                 DeviceSerialKey = c.DeviceSerialKey,
