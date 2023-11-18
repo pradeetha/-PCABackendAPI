@@ -28,7 +28,7 @@ namespace PCABackendBL.Helper
                 lastModified = DateTime.UtcNow,
                 Password = mD5EncryptionManager.GetMD5Hash(userProfile.Password),
                 UserProfileId = userProfileId,
-                CreatedDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss")
+                CreatedDate = DateTime.UtcNow.ToString("yyyy-MM-ddThh:mm:ss.fffffffZ")
 
         };
 
